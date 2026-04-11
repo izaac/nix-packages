@@ -23,11 +23,6 @@ Custom Nix packages for my NixOS systems.
 }
 ```
 
-Then reference packages:
-```nix
-nix-packages.packages.${system}.ethereal-waves
-```
-
 ### Run directly
 
 ```bash

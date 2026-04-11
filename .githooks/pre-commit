@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# Stop on errors
+set -e 
+
+# Show output in git console
+exec 1>&2
+
+echo "Running Pre-Commit Hooks..."
+
+# Get staged nix files
+STAGED_NIX_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.nix$' || true)
+
+if [ -n "$STAGED_NIX_FILES" ]; then
+    echo "Formatting..."
+    nix run nixpkgs#alejandra -- -q $STAGED_NIX_FILES
+    
+    echo "Checking for dead code..."
+    nix run nixpkgs#deadnix -- -e $STAGED_NIX_FILES
+    
+    echo "Running statix..."
+    # Statix requires single files
+    for file in $STAGED_NIX_FILES; do
+        echo " -> $file"
+        nix run nixpkgs#statix -- fix "$file"
+    done
+
+    # Re-stage formatted files
+    git add $STAGED_NIX_FILES
+fi
+
+if command -v ai-trace-scan &>/dev/null; then
+    echo "Scanning for AI traces..."
+    ai-trace-scan --staged --quiet
+fi
+
+echo "Pre-Commit Checks Passed!"
+exit 0
