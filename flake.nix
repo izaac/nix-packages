@@ -21,6 +21,7 @@
       zelda-oot = pkgs.callPackage ./pkgs/zelda-oot {};
       ethereal-waves = pkgs.callPackage ./pkgs/ethereal-waves {};
       brush-shell = pkgs.callPackage ./pkgs/brush-shell {};
+      brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
     });
 
     overlays.default = final: _prev: {
@@ -28,6 +29,7 @@
       izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
       izaac-ethereal-waves = final.callPackage ./pkgs/ethereal-waves {};
       izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
+      izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
     };
   };
 }
