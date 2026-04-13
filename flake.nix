@@ -1,3 +1,4 @@
+# Izaac's custom Nix packages
 {
   description = "Izaac's custom Nix packages";
 
