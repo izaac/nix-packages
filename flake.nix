@@ -4,9 +4,15 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
-  outputs = {nixpkgs, ...}: let
+  outputs = {
+    self,
+    nixpkgs,
+    treefmt-nix,
+    ...
+  }: let
     systems = ["x86_64-linux"];
     forEachSystem = nixpkgs.lib.genAttrs systems;
     mkPkgs = system:
@@ -14,6 +20,9 @@
         inherit system;
         config.allowUnfree = true;
       };
+    treefmtEval =
+      forEachSystem (system:
+        treefmt-nix.lib.evalModule (mkPkgs system) ./treefmt.nix);
   in {
     packages = forEachSystem (system: let
       pkgs = mkPkgs system;
@@ -25,39 +34,12 @@
       brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
     });
 
-    checks = forEachSystem (system: let
-      pkgs = mkPkgs system;
-    in {
-      formatting =
-        pkgs.runCommand "alejandra-check"
-        {
-          src = ./.;
-          nativeBuildInputs = [pkgs.alejandra];
-        } ''
-          cd "$src"
-          alejandra --check .
-          touch "$out"
-        '';
-      linting =
-        pkgs.runCommand "statix-check"
-        {
-          src = ./.;
-          nativeBuildInputs = [pkgs.statix];
-        } ''
-          cd "$src"
-          statix check .
-          touch "$out"
-        '';
-      deadcode =
-        pkgs.runCommand "deadnix-check"
-        {
-          src = ./.;
-          nativeBuildInputs = [pkgs.deadnix];
-        } ''
-          cd "$src"
-          deadnix --fail .
-          touch "$out"
-        '';
+    formatter =
+      forEachSystem (system:
+        treefmtEval.${system}.config.build.wrapper);
+
+    checks = forEachSystem (system: {
+      formatting = treefmtEval.${system}.config.build.check self;
     });
 
     overlays.default = final: _prev: {
