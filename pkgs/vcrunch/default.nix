@@ -1,12 +1,12 @@
-{ pkgs, ... }:
+{pkgs, ...}:
 pkgs.stdenv.mkDerivation {
   pname = "vcrunch";
   version = "1.0.0";
 
   src = ./.;
 
-  nativeBuildInputs = [ pkgs.makeWrapper ];
-  buildInputs = [ pkgs.python3 ];
+  nativeBuildInputs = [pkgs.makeWrapper];
+  buildInputs = [pkgs.python3];
 
   dontBuild = true;
 

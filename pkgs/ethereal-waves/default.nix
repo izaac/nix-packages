@@ -1,17 +1,16 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, rustPlatform
-, libcosmicAppHook
-, just
-, pkg-config
-, glib
-, gst_all_1
-, libglvnd
-, libgbm
-,
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  rustPlatform,
+  libcosmicAppHook,
+  just,
+  pkg-config,
+  glib,
+  gst_all_1,
+  libglvnd,
+  libgbm,
 }:
-
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "ethereal-waves";
   version = "0.3.1";
