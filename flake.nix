@@ -24,6 +24,41 @@
       brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
     });
 
+    checks = forEachSystem (system: let
+      pkgs = mkPkgs system;
+    in {
+      formatting =
+        pkgs.runCommand "alejandra-check"
+        {
+          src = ./.;
+          nativeBuildInputs = [pkgs.alejandra];
+        } ''
+          cd "$src"
+          alejandra --check .
+          touch "$out"
+        '';
+      linting =
+        pkgs.runCommand "statix-check"
+        {
+          src = ./.;
+          nativeBuildInputs = [pkgs.statix];
+        } ''
+          cd "$src"
+          statix check .
+          touch "$out"
+        '';
+      deadcode =
+        pkgs.runCommand "deadnix-check"
+        {
+          src = ./.;
+          nativeBuildInputs = [pkgs.deadnix];
+        } ''
+          cd "$src"
+          deadnix --fail .
+          touch "$out"
+        '';
+    });
+
     overlays.default = final: _prev: {
       izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
       izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
