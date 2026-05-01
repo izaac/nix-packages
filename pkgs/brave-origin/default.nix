@@ -61,7 +61,7 @@
   addDriverRunpath,
   enableVulkan ? vulkanSupport,
 }: let
-  version = "1.91.118";
+  version = "1.92.9";
 
   deps =
     [
@@ -157,7 +157,7 @@ in
 
     src = fetchurl {
       url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin-nightly-${version}-linux-amd64.zip";
-      hash = "sha256-eyskG6aRbZTrW1QVl7r/oNI3ROR99IsVnv7qdWZ2v/U=";
+      hash = "sha256-cfyouTKyIsD0HOLQ5eXAkMITQAGGcoZCQ7SJLsXPHjY=";
     };
 
     dontConfigure = true;
