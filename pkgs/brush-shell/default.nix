@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  rev = "e45ef40d8fcbc597305a59a20cab3132c5bee30a";
+  rev = "3341f35d76d47ad2ccf51f0aab1d88b07e5a2dab";
   shortRev = builtins.substring 0 7 rev;
 in
   pkgs.rustPlatform.buildRustPackage {
@@ -14,10 +14,10 @@ in
       owner = "reubeno";
       repo = "brush";
       inherit rev;
-      hash = "sha256-rXmFFtbXAM8762d/6VKNZvnCVg2xchpm6/cEMdGa108=";
+      hash = "sha256-CXNyg51A8IMZkec9jlsiNyKdSkoLDpbRAGDRSbMTbGE=";
     };
 
-    cargoHash = "sha256-SXxdoT++e9VLRGrOEBy8E8fi3sd+kgXycio386l2GXU=";
+    cargoHash = "sha256-9ZODDzfZI29Let5Yf0RYfV9vjTeH1VUAvyO8/USZ8UQ=";
 
     cargoBuildFlags = ["-p" "brush-shell"];
 
