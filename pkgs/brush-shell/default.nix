@@ -3,21 +3,20 @@
   lib,
   ...
 }: let
-  rev = "3341f35d76d47ad2ccf51f0aab1d88b07e5a2dab";
-  shortRev = builtins.substring 0 7 rev;
+  version = "0.4.0";
 in
   pkgs.rustPlatform.buildRustPackage {
     pname = "brush-shell";
-    version = "0.3.0-unstable-${shortRev}";
+    inherit version;
 
     src = pkgs.fetchFromGitHub {
       owner = "reubeno";
       repo = "brush";
-      inherit rev;
-      hash = "sha256-CXNyg51A8IMZkec9jlsiNyKdSkoLDpbRAGDRSbMTbGE=";
+      tag = "brush-v${version}";
+      hash = "sha256-zG6ho/QECzLC/evOUdo9mYXoh4xA2PF+BQvnCsLZiNg=";
     };
 
-    cargoHash = "sha256-9ZODDzfZI29Let5Yf0RYfV9vjTeH1VUAvyO8/USZ8UQ=";
+    cargoHash = "sha256-NSvlLiLp0kdnWNUSIateGkscL5as+b00d54CP3sEakI=";
 
     cargoBuildFlags = ["-p" "brush-shell"];
 
