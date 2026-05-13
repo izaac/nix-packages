@@ -32,6 +32,6 @@ pkgs.writeShellScriptBin "launch-zelda-oot" ''
   ${pkgs.steam-run}/bin/steam-run ./usr/bin/soh.elf
 
   cd "$GAME_DIR"
-  ${pkgs.fuse}/bin/fusermount3 -u "$MNT_FINAL"
-  ${pkgs.fuse}/bin/fusermount3 -u "$MNT_BASE"
+  ${pkgs.fuse3}/bin/fusermount3 -u "$MNT_FINAL"
+  ${pkgs.fuse3}/bin/fusermount3 -u "$MNT_BASE"
 ''
