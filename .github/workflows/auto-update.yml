@@ -38,8 +38,8 @@ jobs:
           {
             echo "## Update summary"
             echo
-            echo "| Package | Before | After | Status |"
-            echo "|---------|--------|-------|--------|"
+            echo "| Package | Before | After | Status | Hash verified |"
+            echo "|---------|--------|-------|--------|---------------|"
           } > /tmp/status.md
 
           nix shell nixpkgs#nix-update nixpkgs#jq nixpkgs#curl --command bash -c '
@@ -73,7 +73,23 @@ jobs:
                 status="⬆ bumped"
               fi
 
-              printf "| %s | %s | %s | %s |\n" "$pkg" "$before" "$after" "$status" >> /tmp/status.md
+              # Independent hash verification: build the (possibly updated)
+              # derivation and let Nix compare its fixed-output hash against
+              # what we wrote in default.nix. Skip on failed updates — nothing
+              # to verify if we never wrote new bytes. nix-update --build
+              # already builds before we get here, so this is fast on cache.
+              if [[ "$status" == ❌* ]]; then
+                verify="—"
+              else
+                if nix build ".#$pkg" --no-link --print-out-paths > /dev/null 2>&1; then
+                  verify="✓"
+                else
+                  verify="❌ hash mismatch"
+                  echo "::error::$pkg failed hash verification — fixed-output hash in default.nix does not match what nix downloads"
+                fi
+              fi
+
+              printf "| %s | %s | %s | %s | %s |\n" "$pkg" "$before" "$after" "$status" "$verify" >> /tmp/status.md
               echo "::endgroup::"
             done
           '
