@@ -2,6 +2,13 @@
 {
   description = "Izaac's custom Nix packages";
 
+  nixConfig = {
+    extra-substituters = ["https://izaac-nix.cachix.org"];
+    extra-trusted-public-keys = [
+      "izaac-nix.cachix.org-1:ff3lZcS/eWO6i3+BXAds6MbSnEzDe2HMWvTY2bcoXDk="
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     treefmt-nix = {
