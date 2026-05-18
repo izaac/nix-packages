@@ -42,6 +42,7 @@
       ethereal-waves = pkgs.callPackage ./pkgs/ethereal-waves {};
       brush-shell = pkgs.callPackage ./pkgs/brush-shell {};
       brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
+      flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
     });
 
     formatter =
@@ -58,6 +59,7 @@
       izaac-ethereal-waves = final.callPackage ./pkgs/ethereal-waves {};
       izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
       izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
+      izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
     };
   };
 }
