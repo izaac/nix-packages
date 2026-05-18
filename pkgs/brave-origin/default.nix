@@ -217,11 +217,16 @@ in
       install -Dm644 ${desktopItem}/share/applications/brave-origin.desktop \
         $out/share/applications/brave-origin.desktop
 
-      for size in 32 64 128 256; do
-        if [ -f "$out/opt/brave-origin/product_logo_$size.png" ]; then
-          install -Dm644 "$out/opt/brave-origin/product_logo_$size.png" \
-            "$out/share/icons/hicolor/''${size}x''${size}/apps/brave-origin.png"
-        fi
+      for size in 16 24 32 48 64 128 256; do
+        for candidate in \
+          "$out/opt/brave-origin/product_logo_$size.png" \
+          "$out/opt/brave-origin/product_logo_''${size}_nightly.png"; do
+          if [ -f "$candidate" ]; then
+            install -Dm644 "$candidate" \
+              "$out/share/icons/hicolor/''${size}x''${size}/apps/brave-origin.png"
+            break
+          fi
+        done
       done
 
       runHook postInstall
