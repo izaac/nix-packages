@@ -13,16 +13,16 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "ethereal-waves";
-  version = "0.4.1";
+  version = "0.5.1";
 
   src = fetchFromGitHub {
     owner = "cosmic-utils";
     repo = "ethereal-waves";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-Zfj3TFYpdWHkzIy54G7nSEcFA4L1ZfscKDItYIh5QNY=";
+    hash = "sha256-Tn3udiXMgUQZfTRcGaEggfY4OYA34VT8RInXucoHcKQ=";
   };
 
-  cargoHash = "sha256-QqaNzudQhXy6paBehMw/uRjbAsunydy3D82a6aHJXjs=";
+  cargoHash = "sha256-12caCCXBmdXJ3qWExFERINIHzUbP/eH+p1is80TLiZY=";
 
   nativeBuildInputs = [
     just
