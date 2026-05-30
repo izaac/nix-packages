@@ -23,8 +23,9 @@
     treefmt-nix,
     ...
   }: let
-    systems = ["x86_64-linux"];
-    forEachSystem = nixpkgs.lib.genAttrs systems;
+    inherit (nixpkgs) lib;
+    systems = ["x86_64-linux" "aarch64-darwin"];
+    forEachSystem = lib.genAttrs systems;
     mkPkgs = system:
       import nixpkgs {
         inherit system;
@@ -36,14 +37,19 @@
   in {
     packages = forEachSystem (system: let
       pkgs = mkPkgs system;
-    in {
-      vcrunch = pkgs.callPackage ./pkgs/vcrunch {};
-      zelda-oot = pkgs.callPackage ./pkgs/zelda-oot {};
-      ethereal-waves = pkgs.callPackage ./pkgs/ethereal-waves {};
-      brush-shell = pkgs.callPackage ./pkgs/brush-shell {};
-      brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
-      flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
-    });
+      linuxOnly = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+        vcrunch = pkgs.callPackage ./pkgs/vcrunch {};
+        zelda-oot = pkgs.callPackage ./pkgs/zelda-oot {};
+        ethereal-waves = pkgs.callPackage ./pkgs/ethereal-waves {};
+        brush-shell = pkgs.callPackage ./pkgs/brush-shell {};
+        brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
+        flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
+      };
+    in
+      linuxOnly
+      // {
+        antigravity-cli = pkgs.callPackage ./pkgs/antigravity-cli {};
+      });
 
     formatter =
       forEachSystem (system:
@@ -53,13 +59,19 @@
       formatting = treefmtEval.${system}.config.build.check self;
     });
 
-    overlays.default = final: _prev: {
-      izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
-      izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
-      izaac-ethereal-waves = final.callPackage ./pkgs/ethereal-waves {};
-      izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
-      izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
-      izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
-    };
+    overlays.default = final: _prev: let
+      linuxOnly = lib.optionalAttrs final.stdenv.hostPlatform.isLinux {
+        izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
+        izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
+        izaac-ethereal-waves = final.callPackage ./pkgs/ethereal-waves {};
+        izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
+        izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
+        izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
+      };
+    in
+      linuxOnly
+      // {
+        izaac-antigravity-cli = final.callPackage ./pkgs/antigravity-cli {};
+      };
   };
 }
