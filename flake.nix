@@ -44,6 +44,7 @@
         brush-shell = pkgs.callPackage ./pkgs/brush-shell {};
         brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
         flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
+        ladybird = pkgs.callPackage ./pkgs/ladybird {};
       };
     in
       linuxOnly
@@ -67,6 +68,7 @@
         izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
         izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
         izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
+        izaac-ladybird = final.callPackage ./pkgs/ladybird {};
       };
     in
       linuxOnly

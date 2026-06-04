@@ -33,4 +33,5 @@ jobs:
             .#ethereal-waves \
             .#brush-shell \
             .#brave-origin \
+            .#ladybird \
             --print-build-logs
