@@ -6,8 +6,8 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEF="$DIR/default.nix"
 
-# Fetch latest commit from main branch
-NEW_REV=$(curl -sf "https://api.github.com/repos/LadybirdBrowser/ladybird/commits/main" | jq -r '.sha')
+# Fetch latest commit from master branch
+NEW_REV=$(gh api 'repos/LadybirdBrowser/ladybird/commits?per_page=1&sha=master' --jq '.[0].sha')
 OLD_REV=$(grep -oP '(?<=rev = ")[^"]+' "$DEF")
 
 if [[ "$NEW_REV" == "$OLD_REV" ]]; then
@@ -18,15 +18,14 @@ fi
 echo "ladybird: $OLD_REV -> $NEW_REV"
 
 # Update version date
-COMMIT_DATE=$(curl -sf "https://api.github.com/repos/LadybirdBrowser/ladybird/commits/$NEW_REV" | jq -r '.commit.committer.date[:10]')
+COMMIT_DATE=$(gh api "repos/LadybirdBrowser/ladybird/commits/$NEW_REV" --jq '.commit.committer.date[:10]')
 sed -i "s|version = \"0-unstable-[0-9-]*\"|version = \"0-unstable-${COMMIT_DATE}\"|" "$DEF"
 
 # Update rev
 sed -i "s|rev = \"$OLD_REV\"|rev = \"$NEW_REV\"|" "$DEF"
 
 # Update source hash
-NEW_SRC_HASH=$(nix-prefetch-url --unpack "https://github.com/LadybirdBrowser/ladybird/archive/${NEW_REV}.tar.gz" 2>/dev/null)
-NEW_SRC_SRI=$(nix hash convert --hash-algo sha256 --to sri "$NEW_SRC_HASH")
+NEW_SRC_SRI=$(nix store prefetch-file --unpack --json "https://github.com/LadybirdBrowser/ladybird/archive/${NEW_REV}.tar.gz" | jq -r '.hash')
 OLD_SRC_SRI=$(grep -A2 'src = fetchFromGitHub' "$DEF" | grep -oP '(?<=hash = ")[^"]+')
 sed -i "s|$OLD_SRC_SRI|$NEW_SRC_SRI|" "$DEF"
 
