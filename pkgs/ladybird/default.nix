@@ -45,7 +45,7 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "LadybirdBrowser";
     repo = "ladybird";
-    rev = "effb3fad3c4c4711f5309c6446b8f89c084d5aeb";
+    rev = "02b205361dd239e134f434e484b609d1fa5f1938";
     hash = "sha256-ojP5Gkwcp3/VKWAE7lDzI9Jm7fnRLOlzQnDdncXmgEg=";
   };
 
