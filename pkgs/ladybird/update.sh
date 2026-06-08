@@ -26,7 +26,7 @@ sed -i "s|rev = \"$OLD_REV\"|rev = \"$NEW_REV\"|" "$DEF"
 
 # Update source hash
 NEW_SRC_SRI=$(nix store prefetch-file --unpack --json "https://github.com/LadybirdBrowser/ladybird/archive/${NEW_REV}.tar.gz" | jq -r '.hash')
-OLD_SRC_SRI=$(grep -A2 'src = fetchFromGitHub' "$DEF" | grep -oP '(?<=hash = ")[^"]+')
+OLD_SRC_SRI=$(grep -A4 'src = fetchFromGitHub' "$DEF" | grep -oP '(?<=hash = ")[^"]+')
 sed -i "s|$OLD_SRC_SRI|$NEW_SRC_SRI|" "$DEF"
 
 # Update cargo hash: set fake, build, capture real hash
