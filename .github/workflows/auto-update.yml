@@ -31,6 +31,8 @@ jobs:
 
       - name: Bump packages
         id: bump
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # Per-package status table built up as we go. Emitted to the PR body
           # and the workflow run's Step Summary so reviewers can see what
