@@ -40,11 +40,9 @@
       linuxOnly = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
         vcrunch = pkgs.callPackage ./pkgs/vcrunch {};
         zelda-oot = pkgs.callPackage ./pkgs/zelda-oot {};
-        ethereal-waves = pkgs.callPackage ./pkgs/ethereal-waves {};
         brush-shell = pkgs.callPackage ./pkgs/brush-shell {};
         brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
         flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
-        ladybird = pkgs.callPackage ./pkgs/ladybird {};
       };
     in
       linuxOnly
@@ -65,11 +63,9 @@
       linuxOnly = lib.optionalAttrs final.stdenv.hostPlatform.isLinux {
         izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
         izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
-        izaac-ethereal-waves = final.callPackage ./pkgs/ethereal-waves {};
         izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
         izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
         izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
-        izaac-ladybird = final.callPackage ./pkgs/ladybird {};
       };
     in
       linuxOnly

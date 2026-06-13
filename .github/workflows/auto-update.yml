@@ -49,7 +49,7 @@ jobs:
             # Only packages with an upstream to track. vcrunch and zelda-oot
             # are local-only (src = ./. / writeShellScriptBin) — no version
             # concept beyond what Chief stamps manually.
-            for pkg in brush-shell ethereal-waves brave-origin antigravity-cli ladybird; do
+            for pkg in brush-shell brave-origin antigravity-cli; do
               echo "::group::update $pkg"
               def="pkgs/$pkg/default.nix"
               before=$(grep -oE "version = \"[^\"]+\"" "$def" | head -n1 | sed "s/version = \"//; s/\"\$//")

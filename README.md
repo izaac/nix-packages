@@ -4,7 +4,7 @@ Personal Nix package collection.
 
 ## How to Update
 
-### Rust Packages (brush-shell, ethereal-waves)
+### Rust Packages (brush-shell)
 These use `buildRustPackage` and need a `cargoHash`.
 
 1. Update `rev` and `shortRev` (if used) to latest commit.

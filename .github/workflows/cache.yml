@@ -30,8 +30,6 @@ jobs:
           nix build \
             .#vcrunch \
             .#zelda-oot \
-            .#ethereal-waves \
             .#brush-shell \
             .#brave-origin \
-            .#ladybird \
             --print-build-logs
