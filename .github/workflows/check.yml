@@ -11,6 +11,10 @@ on:
       - "**/*.nix"
       - "flake.lock"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-stones:
     runs-on: ubuntu-latest
