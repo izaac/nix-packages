@@ -4,27 +4,27 @@
   fetchurl,
   autoPatchelfHook,
 }: let
-  version = "1.0.6";
+  version = "1.0.8";
 
   # Manifest URLs (for reference / update.sh):
   #   https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/<platform>.json
   # Tarballs each contain a single `antigravity` binary at the archive root.
   sources = {
     "x86_64-linux" = {
-      url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.0.6-6458082025406464/linux-x64/cli_linux_x64.tar.gz";
-      hash = "sha512-G1eXe+CDmLA0TvUBkIloPAqumClUXN8wVsmh0CuUnqmNtuZD75bvT2h3ZU9NSNUmcDXviidlKo4CP2W5HAbfdg==";
+      url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.0.8-5963827121094656/linux-x64/cli_linux_x64.tar.gz";
+      hash = "sha512-eEJqYfkpXXUoXZzdOem53Cc2NGRoySzoam/eG8x6nW3TLHvtGQOl3qzYdKBddbq/W5B+mRoRetY/M1SBE8Ybwg==";
     };
     "aarch64-linux" = {
-      url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.0.6-6458082025406464/linux-arm/cli_linux_arm64.tar.gz";
-      hash = "sha512-+ZZ/qMMYwx94vML4E8dU4Ob3usgDAURWHVswMVVyDajKBIXspLbIFCmRcFJqHozJ3J7CCR/Mwem9uGTduWEHVw==";
+      url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.0.8-5963827121094656/linux-arm/cli_linux_arm64.tar.gz";
+      hash = "sha512-mCs0Te/S5jsI1KnvYIp3Cro6kumkEY0xjgCC8pdDRX6KFqrxwA98Ot51wtB671qPpdpmDkCMsZm0eod4sxIooA==";
     };
     "x86_64-darwin" = {
-      url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.0.6-6458082025406464/darwin-x64/cli_mac_x64.tar.gz";
-      hash = "sha512-qFMu84KRak5pJlCpQyOvyAo1Mh0tyrHTe/JfZL3SDIoGF0B1Y1ppKy8AM6C4igJ9cgxyLi036pInf/iBq6MFvw==";
+      url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.0.8-5963827121094656/darwin-x64/cli_mac_x64.tar.gz";
+      hash = "sha512-/5nMNqr6uaN73u9rosycHf7vrxMwUuIaZarsRt1almA9W0g1K8fVHUbl22PCqcBcXRImtpQAwBzKAZUhfy3OQQ==";
     };
     "aarch64-darwin" = {
-      url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.0.6-6458082025406464/darwin-arm/cli_mac_arm64.tar.gz";
-      hash = "sha512-3k/XXkeDPPHxRYu492NI49zD+GKjvGHxgb+MRNlQPImAy2m2hxUfgOIveaVc/AfqeUq1T2ZY2XqsKzk6OCKiuw==";
+      url = "https://storage.googleapis.com/antigravity-public/antigravity-cli/1.0.8-5963827121094656/darwin-arm/cli_mac_arm64.tar.gz";
+      hash = "sha512-j8ZX7qOhPAZixhS6QFHwQFDLCrunVVUYqts22I2n070hKuTMbPQ5IDiyFlaJaXmuqzL4vwXIDmn8cgx2UQNGNg==";
     };
   };
 
