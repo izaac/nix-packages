@@ -44,6 +44,7 @@
         brush-shell = pkgs.callPackage ./pkgs/brush-shell {};
         brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
         flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
+        opengigabyte = pkgs.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
       };
     in
       linuxOnly
@@ -69,6 +70,7 @@
           izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
           izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
           izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
+          izaac-opengigabyte = final.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
         };
       in
         linuxOnly
