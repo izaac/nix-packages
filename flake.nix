@@ -30,6 +30,7 @@
       import nixpkgs {
         inherit system;
         config.allowUnfree = true;
+        overlays = [(import ./overlays/dwarfs-skip-affinity-test.nix)];
       };
     treefmtEval =
       forEachSystem (system:
@@ -59,19 +60,21 @@
       formatting = treefmtEval.${system}.config.build.check self;
     });
 
-    overlays.default = final: _prev: let
-      linuxOnly = lib.optionalAttrs final.stdenv.hostPlatform.isLinux {
-        izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
-        izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
-        izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
-        izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
-        izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
-      };
-    in
-      linuxOnly
-      // {
-        izaac-antigravity-cli = final.callPackage ./pkgs/antigravity-cli {};
-        izaac-proton-drive-cli = final.callPackage ./pkgs/proton-drive-cli {};
-      };
+    overlays.default = final: prev:
+      (import ./overlays/dwarfs-skip-affinity-test.nix final prev)
+      // (let
+        linuxOnly = lib.optionalAttrs final.stdenv.hostPlatform.isLinux {
+          izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
+          izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
+          izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
+          izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
+          izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
+        };
+      in
+        linuxOnly
+        // {
+          izaac-antigravity-cli = final.callPackage ./pkgs/antigravity-cli {};
+          izaac-proton-drive-cli = final.callPackage ./pkgs/proton-drive-cli {};
+        });
   };
 }
