@@ -23,8 +23,8 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "izaac";
     repo = "opengigabyte";
-    rev = "1c12b99207357bb574a37833465d9e4037fe5714";
-    hash = "sha256-xxoxLqRIbWzU5N+V8O73JdLKPr5XVOXOS/V99mSJghg=";
+    rev = "47ec3f17204467c436539c229c6d372de6a94aa7";
+    hash = "sha256-qqQteE3Eg4Enef9eDPD2cNgEpSqjwXSB2Q821tK9L2A=";
   };
 
   # Only the kernel module under driver/ is needed; the daemon, python library
