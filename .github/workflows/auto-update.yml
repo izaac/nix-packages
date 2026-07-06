@@ -62,17 +62,31 @@ jobs:
                 "pkgs/$pkg/update.sh"
                 rc=$?
                 tool="update.sh"
+              elif [[ "$pkg" == "brush-shell" ]]; then
+                # brush-shell tracks the upstream default branch (nightly),
+                # not tagged releases. --version=branch grabs the newest
+                # commit and stamps a "<tag>-unstable-<date>" version.
+                nix-update --flake "$pkg" --version=branch --build
+                rc=$?
+                tool="nix-update (branch)"
               else
                 nix-update --flake "$pkg" --build
                 rc=$?
                 tool="nix-update"
               fi
 
+              # A failed nightly build leaves nix-update's already-rewritten
+              # rev/hash in default.nix. Roll it back so the PR keeps the last
+              # known-good revision instead of carrying a broken bump.
+              if [[ $rc -ne 0 ]]; then
+                git checkout -- "$def"
+                echo "::warning::$pkg $tool failed — reverted to previous revision"
+              fi
+
               after=$(grep -oE "version = \"[^\"]+\"" "$def" | head -n1 | sed "s/version = \"//; s/\"\$//")
 
               if [[ $rc -ne 0 ]]; then
-                status="❌ failed ($tool)"
-                echo "::warning::$pkg $tool failed"
+                status="❌ failed ($tool) — reverted"
               elif [[ "$before" == "$after" ]]; then
                 status="✓ up-to-date"
               else
