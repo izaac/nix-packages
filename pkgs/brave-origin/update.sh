@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Bump brave-origin to the latest brave/brave-browser prerelease that
+# Bump brave-origin to the latest brave/brave-browser release that
 # actually publishes a brave-origin-nightly-*-linux-amd64.zip asset.
-# Not every prerelease tag has Linux artifacts (some are Mac/Win-only),
-# so we walk the assets list rather than guessing the URL.
+# Not every tag has Linux artifacts (some are Mac/Win-only), and brave
+# promotes builds from prerelease to full release over time, so we key
+# off the presence of the nightly Linux asset rather than the prerelease
+# flag. Among all candidates we pick the highest semantic version and
+# never move backwards.
 #
 # Usage: ./update.sh [--check]
 #   --check  Print current vs latest and exit non-zero if behind, no rewrite.
@@ -13,35 +16,36 @@ CHECK_ONLY=${1:-}
 
 current=$(grep -oE 'version = "[^"]+"' "$DEF" | head -n1 | sed 's/version = "//; s/"$//')
 
-# Walk recent prereleases, return the first one that has the linux nightly
-# zip in its asset list. jq emits "<tag>\t<asset_url>" or empty on no match.
-result=$(
+# Collect every release carrying the linux nightly zip, regardless of the
+# prerelease flag. jq emits one "<version>\t<asset_url>" line per candidate.
+candidates=$(
   curl -fsSL \
        -H "Accept: application/vnd.github+json" \
        "https://api.github.com/repos/brave/brave-browser/releases?per_page=100" \
     | nix shell nixpkgs#jq --command jq -r '
-        [
-          .[]
-          | select(.prerelease == true)
-          | . as $r
-          | $r.assets[]
-          | select(.name | test("^brave-origin-nightly-.+-linux-amd64\\.zip$"))
-          | "\($r.tag_name)\t\(.browser_download_url)"
-        ] | first // empty
+        .[]
+        | . as $r
+        | $r.assets[]
+        | select(.name | test("^brave-origin-nightly-.+-linux-amd64\\.zip$"))
+        | "\($r.tag_name | ltrimstr("v"))\t\(.browser_download_url)"
       '
 )
 
-if [[ -z "$result" ]]; then
-  echo "No prerelease found with brave-origin-nightly-*-linux-amd64.zip asset" >&2
+if [[ -z "$candidates" ]]; then
+  echo "No release found with brave-origin-nightly-*-linux-amd64.zip asset" >&2
   exit 1
 fi
 
-new_tag="${result%%$'\t'*}"
-url="${result#*$'\t'}"
-new_version="${new_tag#v}"
+# Highest semantic version wins, not whatever the API happened to list first.
+new_version=$(cut -f1 <<<"$candidates" | sort -V | tail -n1)
+url=$(awk -F'\t' -v v="$new_version" '$1 == v {print $2; exit}' <<<"$candidates")
 
-if [[ "$current" == "$new_version" ]]; then
-  echo "brave-origin already at $current"
+# Downgrade guard: brave prunes and re-flags nightlies, so the highest
+# currently-listed version can be lower than what we already ship. Only
+# move forward.
+highest=$(printf '%s\n%s\n' "$current" "$new_version" | sort -V | tail -n1)
+if [[ "$current" == "$new_version" || "$highest" == "$current" ]]; then
+  echo "brave-origin already at $current (latest listed: $new_version)"
   exit 0
 fi
 
