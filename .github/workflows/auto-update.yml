@@ -75,9 +75,9 @@ jobs:
                 tool="nix-update"
               fi
 
-              # A failed nightly build leaves nix-update's already-rewritten
-              # rev/hash in default.nix. Roll it back so the PR keeps the last
-              # known-good revision instead of carrying a broken bump.
+              # A failed nightly build leaves the rewritten rev/hash from
+              # nix-update in default.nix. Roll it back so the PR keeps the
+              # last known-good revision instead of carrying a broken bump.
               if [[ $rc -ne 0 ]]; then
                 git checkout -- "$def"
                 echo "::warning::$pkg $tool failed — reverted to previous revision"
