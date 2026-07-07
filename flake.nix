@@ -51,6 +51,7 @@
       // {
         antigravity-cli = pkgs.callPackage ./pkgs/antigravity-cli {};
         proton-drive-cli = pkgs.callPackage ./pkgs/proton-drive-cli {};
+        pd = pkgs.callPackage ./pkgs/pd {};
       });
 
     formatter =
@@ -77,6 +78,7 @@
         // {
           izaac-antigravity-cli = final.callPackage ./pkgs/antigravity-cli {};
           izaac-proton-drive-cli = final.callPackage ./pkgs/proton-drive-cli {};
+          izaac-pd = final.callPackage ./pkgs/pd {};
         });
   };
 }
