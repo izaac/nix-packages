@@ -7,11 +7,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "proton-drive-cli";
-  version = "0.0.3";
+  version = "0.0.5";
 
   src = fetchurl {
     url = "https://proton.me/download/drive/cli/${version}/linux-x64/proton-drive";
-    sha256 = "0wzjixykbfgz0fykzxnqqmv5yg63ns6iz3vs8jazh6lw3qslv6wn";
+    sha256 = "16rp3m5pkg1gqla2iibzzxipnygwx1vk94b5gk506gva8dbfb0j7";
   };
 
   dontUnpack = true;
