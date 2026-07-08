@@ -26,6 +26,6 @@ pkgs.stdenv.mkDerivation {
 
   meta = {
     description = "Fuzzy Proton Drive browser that downloads files to cwd";
-    platforms = pkgs.lib.platforms.linux;
+    platforms = pkgs.lib.platforms.linux ++ pkgs.lib.platforms.darwin;
   };
 }

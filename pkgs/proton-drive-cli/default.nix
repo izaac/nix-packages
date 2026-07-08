@@ -16,7 +16,17 @@
       url = "https://proton.me/download/drive/cli/${version}/linux-arm64/proton-drive";
       sha256 = "05y2l90js4vdphky7vk35pk7m9qyjs8zigwp326v5pq2j5akcbkj";
     };
+    aarch64-darwin = fetchurl {
+      url = "https://proton.me/download/drive/cli/${version}/darwin-arm64/proton-drive";
+      sha256 = "0g737ivdw52baab67psjgbsp921q4bip1zr7izv5fxm5dbsrymvz";
+    };
+    x86_64-darwin = fetchurl {
+      url = "https://proton.me/download/drive/cli/${version}/darwin-x64/proton-drive";
+      sha256 = "1zr8nk5ly3d94islls0djhkphls6bklzra9ih2nbcn857zdmczv4";
+    };
   };
+
+  isLinux = stdenv.hostPlatform.isLinux;
 in
   stdenv.mkDerivation {
     pname = "proton-drive-cli";
@@ -30,7 +40,7 @@ in
 
     nativeBuildInputs = [makeWrapper];
 
-    buildInputs = [libsecret];
+    buildInputs = lib.optionals isLinux [libsecret];
 
     installPhase = ''
       runHook preInstall
@@ -39,8 +49,14 @@ in
       cp $src $out/bin/proton-drive
       chmod +x $out/bin/proton-drive
 
-      wrapProgram $out/bin/proton-drive \
-        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [libsecret]}
+      ${
+        if isLinux
+        then ''
+          wrapProgram $out/bin/proton-drive \
+            --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [libsecret]}
+        ''
+        else ""
+      }
 
       runHook postInstall
     '';
@@ -50,6 +66,6 @@ in
       homepage = "https://proton.me/drive";
       license = licenses.gpl3Only;
       maintainers = [];
-      platforms = ["x86_64-linux" "aarch64-linux"];
+      platforms = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
     };
   }
