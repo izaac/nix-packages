@@ -51,3 +51,6 @@ Bundled via Nix wrapper, no manual install needed:
 
 - `proton-drive-cli`
 - `fzf`
+- `jq`
+- `coreutils`
+- `findutils`
