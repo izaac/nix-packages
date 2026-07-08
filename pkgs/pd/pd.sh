@@ -127,7 +127,7 @@ upload_files() {
         name=$(echo "$item" | sed 's/^📁 //;s/^📄 //')
         full_path="$_local_dir/$name"
         echo "⬆ Uploading: $name → $_remote_dir" >&2
-        up_output=$($PROTON_DRIVE filesystem upload "$full_path" "$_remote_dir" 2>&1) || {
+        up_output=$($PROTON_DRIVE filesystem upload "$full_path" "$_remote_dir" < /dev/null 2>&1) || {
           echo "✗ Upload failed: $name" >&2
           echo "$up_output" >&2
           continue
@@ -160,7 +160,7 @@ upload_files() {
       name=$(echo "$item" | sed 's/^📁 //;s/^📄 //')
       full_path="$_local_dir/$name"
       echo "⬆ Uploading: $name → $_remote_dir" >&2
-      up_output=$($PROTON_DRIVE filesystem upload "$full_path" "$_remote_dir" 2>&1) || {
+      up_output=$($PROTON_DRIVE filesystem upload "$full_path" "$_remote_dir" < /dev/null 2>&1) || {
         echo "✗ Upload failed: $name" >&2
         echo "$up_output" >&2
         continue
