@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  version = "brush-core-v0.5.0-unstable-2026-07-05";
+  version = "brush-core-v0.5.0-unstable-2026-07-11";
 in
   pkgs.rustPlatform.buildRustPackage {
     pname = "brush-shell";
@@ -12,11 +12,11 @@ in
     src = pkgs.fetchFromGitHub {
       owner = "reubeno";
       repo = "brush";
-      rev = "0300a84da5ce7135478c1831e5deacc2d5e7ec13";
-      hash = "sha256-wvP1+WozDKDI8ztPfO9lPHyn7T6yvT5EVM/u5u6+4OQ=";
+      rev = "7521022efcd3c857f3829c1f9d69b67b0a262922";
+      hash = "sha256-0UeeI/Gszj8KG1PL8yFz8jqc2jo4WP4r+gyeixWGhpQ=";
     };
 
-    cargoHash = "sha256-7QHzxsgLr5tSNcbDSgRi5whK+a56Fu8M/9pcKTbeuo0=";
+    cargoHash = "sha256-QV8NSTtUX/DqXLmw1CkKJ2k4nxh6xLPG1cnjEwQqTxE=";
 
     cargoBuildFlags = ["-p" "brush-shell"];
 
