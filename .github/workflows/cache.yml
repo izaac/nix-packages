@@ -34,6 +34,8 @@ jobs:
           nix build \
             .#vcrunch \
             .#zelda-oot \
-            .#brush-shell \
             .#brave-origin \
+            .#sparrow \
+            .#proton-drive-cli \
+            .#pd \
             --print-build-logs
