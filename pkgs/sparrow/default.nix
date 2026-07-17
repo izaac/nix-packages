@@ -212,6 +212,13 @@
       mkdir -p $out
       cp manifest.txt $out/
       cp -r modules/ $out/
+
+      # Copy standalone native libs (JNA moved out of JIMAGE in 2.5.x)
+      if [ -f lib/runtime/lib/libjnidispatch.so ]; then
+        mkdir -p $out/modules/com.sparrowwallet.merged.module/com/sun/jna/linux-x86-64
+        cp lib/runtime/lib/libjnidispatch.so $out/modules/com.sparrowwallet.merged.module/com/sun/jna/linux-x86-64/
+        chmod +x $out/modules/com.sparrowwallet.merged.module/com/sun/jna/linux-x86-64/libjnidispatch.so
+      fi
     '';
   };
   sparrow-icons = stdenvNoCC.mkDerivation {
