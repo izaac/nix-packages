@@ -114,7 +114,7 @@
       -m com.sparrowwallet.sparrow
     )
 
-    XDG_DATA_DIRS=${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}:${gtk3}/share/gsettings-schemas/${gtk3.name}:$XDG_DATA_DIRS ${openjdk}/bin/java ''${params[@]} $@
+    XDG_DATA_DIRS=${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}:${gtk3}/share/gsettings-schemas/${gtk3.name}:$XDG_DATA_DIRS LD_LIBRARY_PATH=@sparrowNativeLibs@:$LD_LIBRARY_PATH ${openjdk}/bin/java ''${params[@]} $@
   '';
 
   torWrapper = writeScript "tor-wrapper" ''
@@ -213,11 +213,16 @@
       cp manifest.txt $out/
       cp -r modules/ $out/
 
-      # Copy standalone native libs (JNA moved out of JIMAGE in 2.5.x)
-      if [ -f lib/runtime/lib/libjnidispatch.so ]; then
+      # Copy all standalone native libs from the bundled runtime.
+      # In 2.5.x many .so files moved out of the JIMAGE into lib/runtime/lib/.
+      mkdir -p $out/native-libs
+      cp lib/runtime/lib/*.so $out/native-libs/ 2>/dev/null || true
+      chmod +x $out/native-libs/*.so 2>/dev/null || true
+
+      # JNA needs libjnidispatch.so in its module resource path
+      if [ -f $out/native-libs/libjnidispatch.so ]; then
         mkdir -p $out/modules/com.sparrowwallet.merged.module/com/sun/jna/linux-x86-64
-        cp lib/runtime/lib/libjnidispatch.so $out/modules/com.sparrowwallet.merged.module/com/sun/jna/linux-x86-64/
-        chmod +x $out/modules/com.sparrowwallet.merged.module/com/sun/jna/linux-x86-64/libjnidispatch.so
+        cp $out/native-libs/libjnidispatch.so $out/modules/com.sparrowwallet.merged.module/com/sun/jna/linux-x86-64/
       fi
     '';
   };
@@ -273,6 +278,7 @@ in
       install -D -m 777 ${launcher} $out/bin/sparrow-desktop
       substituteAllInPlace $out/bin/sparrow-desktop
       substituteInPlace $out/bin/sparrow-desktop --subst-var-by jdkModules ${jdk-modules}
+      substituteInPlace $out/bin/sparrow-desktop --subst-var-by sparrowNativeLibs ${sparrow-modules}/native-libs
 
       mkdir -p $out/share/icons
       ln -s ${sparrow-icons}/hicolor $out/share/icons
