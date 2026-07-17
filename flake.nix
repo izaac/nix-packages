@@ -41,10 +41,10 @@
       linuxOnly = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
         vcrunch = pkgs.callPackage ./pkgs/vcrunch {};
         zelda-oot = pkgs.callPackage ./pkgs/zelda-oot {};
-        brush-shell = pkgs.callPackage ./pkgs/brush-shell {};
         brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
         flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
         opengigabyte = pkgs.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
+        sparrow = pkgs.callPackage ./pkgs/sparrow {};
       };
     in
       linuxOnly
@@ -68,10 +68,10 @@
         linuxOnly = lib.optionalAttrs final.stdenv.hostPlatform.isLinux {
           izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
           izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
-          izaac-brush-shell = final.callPackage ./pkgs/brush-shell {};
           izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
           izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
           izaac-opengigabyte = final.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
+          izaac-sparrow = final.callPackage ./pkgs/sparrow {};
         };
       in
         linuxOnly

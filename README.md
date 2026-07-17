@@ -2,26 +2,41 @@
 
 Personal Nix package collection.
 
-## How to Update
+## Packages
 
-### Rust Packages (brush-shell)
-These use `buildRustPackage` and need a `cargoHash`.
+| Package            | Platforms                     | Auto-update |
+|--------------------|-------------------------------|-------------|
+| `proton-drive-cli` | linux, darwin (x64 + arm64)   | `update.sh` |
+| `pd`               | linux, darwin                 | manual      |
+| `sparrow`          | linux (x64 + arm64)           | planned     |
+| `antigravity-cli`  | linux, darwin                 | nix-update  |
+| `brave-origin`     | linux                         | nix-update  |
+| `vcrunch`          | linux                         | manual      |
+| `zelda-oot`        | linux                         | manual      |
+| `flashgbx`         | linux                         | manual      |
+| `opengigabyte`     | linux                         | manual      |
 
-1. Update `rev` and `shortRev` (if used) to latest commit.
-2. Update `hash` (source hash):
-   - Run: `nix shell nixpkgs#nix-prefetch-github -c nix-prefetch-github <owner> <repo> --rev <rev>`
-3. Update `cargoHash`:
-   - Set `cargoHash = lib.fakeHash;` (or many zeros).
-   - Run: `nix-build -E 'with import <nixpkgs> {}; callPackage ./pkgs/<name>/default.nix {}'`
-   - Copy "got" hash from error message into `default.nix`.
-4. Verify build: `nix-build -E 'with import <nixpkgs> {}; callPackage ./pkgs/<name>/default.nix {}'`
+## Usage
 
-### Other Packages (vcrunch, brave-origin)
-Usually just need `rev` and `hash` updates.
+```bash
+# Try a package without installing
+nix run github:izaac/nix-packages#pd
 
-1. Update `rev`.
-2. Update source `hash` using `nix-prefetch-url` or `nix-prefetch-github`.
-3. Verify build same as above.
+# Use as flake input
+inputs.nix-packages.url = "github:izaac/nix-packages";
+```
+
+## Updating Packages
+
+Packages with `update.sh` scripts auto-update via the weekly GitHub Actions workflow.
+For others, use `nix-update`:
+
+```bash
+nix-update --flake <package> --build
+```
 
 ## Verification
-Always run `nix-build` before committing.
+
+```bash
+nix flake check
+```

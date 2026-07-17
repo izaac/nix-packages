@@ -53,7 +53,7 @@ jobs:
             # Only packages with an upstream to track. vcrunch and zelda-oot
             # are local-only (src = ./. / writeShellScriptBin) — no version
             # concept beyond what Chief stamps manually.
-            for pkg in brush-shell brave-origin antigravity-cli proton-drive-cli; do
+            for pkg in brave-origin antigravity-cli proton-drive-cli; do
               echo "::group::update $pkg"
               def="pkgs/$pkg/default.nix"
               before=$(grep -oE "version = \"[^\"]+\"" "$def" | head -n1 | sed "s/version = \"//; s/\"\$//")
@@ -62,13 +62,6 @@ jobs:
                 "pkgs/$pkg/update.sh"
                 rc=$?
                 tool="update.sh"
-              elif [[ "$pkg" == "brush-shell" ]]; then
-                # brush-shell tracks the upstream default branch (nightly),
-                # not tagged releases. --version=branch grabs the newest
-                # commit and stamps a "<tag>-unstable-<date>" version.
-                nix-update --flake "$pkg" --version=branch --build
-                rc=$?
-                tool="nix-update (branch)"
               else
                 nix-update --flake "$pkg" --build
                 rc=$?
