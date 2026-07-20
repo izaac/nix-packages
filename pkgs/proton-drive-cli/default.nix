@@ -5,24 +5,24 @@
   makeWrapper,
   libsecret,
 }: let
-  version = "0.4.6";
+  version = "0.6.0";
 
   srcs = {
     x86_64-linux = fetchurl {
       url = "https://proton.me/download/drive/cli/${version}/linux-x64/proton-drive";
-      sha256 = "11ns9j7i355v15h25l2fb47xhixkdqyhfhzc33m447l1l0ql39c9";
+      sha256 = "04i0l3hcznd1vk6zaw56jsljcarxqrwmxl2wiz8y5xcwpxiqf9hc";
     };
     aarch64-linux = fetchurl {
       url = "https://proton.me/download/drive/cli/${version}/linux-arm64/proton-drive";
-      sha256 = "05y2l90js4vdphky7vk35pk7m9qyjs8zigwp326v5pq2j5akcbkj";
+      sha256 = "03dgrxd840905bg7c6d4ng55pz5w42fa37jnxy8varzz3ykp9dss";
     };
     aarch64-darwin = fetchurl {
       url = "https://proton.me/download/drive/cli/${version}/darwin-arm64/proton-drive";
-      sha256 = "0g737ivdw52baab67psjgbsp921q4bip1zr7izv5fxm5dbsrymvz";
+      sha256 = "03dgrxd840905bg7c6d4ng55pz5w42fa37jnxy8varzz3ykp9dss";
     };
     x86_64-darwin = fetchurl {
       url = "https://proton.me/download/drive/cli/${version}/darwin-x64/proton-drive";
-      sha256 = "1zr8nk5ly3d94islls0djhkphls6bklzra9ih2nbcn857zdmczv4";
+      sha256 = "03dgrxd840905bg7c6d4ng55pz5w42fa37jnxy8varzz3ykp9dss";
     };
   };
 
