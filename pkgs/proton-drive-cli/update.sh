@@ -1,24 +1,46 @@
 #!/usr/bin/env bash
 # Bump proton-drive-cli using the official version.json endpoint.
 # https://proton.me/download/drive/cli/version.json publishes the latest
-# stable release with per-platform URLs and sha512 checksums.
+# stable release with per-platform URLs and official SHA-512 checksums, so
+# the hashes are taken from upstream rather than recomputed locally.
 #
 # Usage: ./update.sh [--check]
 #   --check  Print current vs latest and exit non-zero if behind, no rewrite.
 set -euo pipefail
 
-DEF="$(dirname "$0")/default.nix"
-CHECK_ONLY=${1:-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEF="${SCRIPT_DIR}/default.nix"
+CHECK_ONLY="${1:-}"
 
 VERSION_URL="https://proton.me/download/drive/cli/version.json"
 
+# Prefer an ambient jq, fall back to nixpkgs so the script is self-contained.
+if command -v jq >/dev/null 2>&1; then
+  JQ=(jq)
+else
+  JQ=(nix shell nixpkgs#jq --command jq)
+fi
+
+if [[ ! -f "$DEF" ]]; then
+  echo "proton-drive-cli: $DEF not found" >&2
+  exit 1
+fi
+
 current=$(grep -oE 'version = "[^"]+"' "$DEF" | head -n1 | sed 's/version = "//; s/"$//')
+if [[ -z "$current" ]]; then
+  echo "proton-drive-cli: could not parse current version from $DEF" >&2
+  exit 1
+fi
 
-latest=$(curl -fsSL "$VERSION_URL" \
-  | nix shell nixpkgs#jq --command jq -r '.Releases[] | select(.CategoryName == "Stable") | .Version')
+if ! json_payload=$(curl -fsSL --retry 3 --connect-timeout 10 "$VERSION_URL"); then
+  echo "proton-drive-cli: failed to fetch $VERSION_URL" >&2
+  exit 1
+fi
 
-if [[ -z "$latest" ]]; then
-  echo "Failed to parse latest version from $VERSION_URL" >&2
+latest=$(echo "$json_payload" | "${JQ[@]}" -r '.Releases[] | select(.CategoryName == "Stable") | .Version' | head -n1)
+
+if [[ ! "$latest" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "proton-drive-cli: invalid version received from upstream: '$latest'" >&2
   exit 1
 fi
 
@@ -33,38 +55,78 @@ if [[ "$CHECK_ONLY" == "--check" ]]; then
   exit 2
 fi
 
-# Fetch new hashes for each platform.
-x64_url="https://proton.me/download/drive/cli/${latest}/linux-x64/proton-drive"
-arm64_url="https://proton.me/download/drive/cli/${latest}/linux-arm64/proton-drive"
+# Pull the four platform checksums upstream publishes for this release.
+# shellcheck disable=SC2016 # $v is a jq variable bound via --arg, not a shell one.
+read -r l_x64_hex l_arm64_hex d_arm64_hex d_x64_hex < <(
+  echo "$json_payload" | "${JQ[@]}" -r --arg v "$latest" '
+    [.Releases[] | select(.Version == $v) | .Files[]]
+    | (map({(.Platform): .Sha512CheckSum}) | add) as $f
+    | [$f["linux/x64"], $f["linux/arm64"], $f["macos/arm64"], $f["macos/x64"]]
+    | @tsv
+  '
+)
 
-x64_hash=$(nix-prefetch-url --type sha256 "$x64_url")
-arm64_hash=$(nix-prefetch-url --type sha256 "$arm64_url")
+for plat_info in "linux/x64:$l_x64_hex" "linux/arm64:$l_arm64_hex" "macos/arm64:$d_arm64_hex" "macos/x64:$d_x64_hex"; do
+  plat="${plat_info%%:*}"
+  hex="${plat_info#*:}"
+  if [[ ! "$hex" =~ ^[0-9a-fA-F]{128}$ ]]; then
+    echo "proton-drive-cli: invalid SHA-512 checksum for ${plat}: '$hex'" >&2
+    exit 1
+  fi
+done
 
-if [[ -z "$x64_hash" || -z "$arm64_hash" ]]; then
-  echo "Failed to compute hashes" >&2
-  exit 1
-fi
+to_sri() {
+  nix --extra-experimental-features 'nix-command' hash convert --hash-algo sha512 --to sri "$1"
+}
 
-# Rewrite default.nix.
-sed -i -E "s|version = \"${current}\";|version = \"${latest}\";|" "$DEF"
+l_x64_sri=$(to_sri "$l_x64_hex")
+l_arm64_sri=$(to_sri "$l_arm64_hex")
+d_arm64_sri=$(to_sri "$d_arm64_hex")
+d_x64_sri=$(to_sri "$d_x64_hex")
 
-# Update x86_64-linux hash (first sha256 in file).
-sed -i -E "0,/sha256 = \"[^\"]+\";/s|sha256 = \"[^\"]+\";|sha256 = \"${x64_hash}\";|" "$DEF"
+# Rewrite the file with python: easier to keep the four-section edit atomic
+# than juggling sed across multi-line attrs.
+python3 - "$DEF" "$latest" "$l_x64_sri" "$l_arm64_sri" "$d_arm64_sri" "$d_x64_sri" <<'PY'
+import os
+import re
+import sys
+import tempfile
 
-# Update aarch64-linux hash (second sha256 in file).
-sed -i -E "0,/sha256 = \"[^\"]+\";/{n; }; s|sha256 = \"[^\"]+\";|sha256 = \"${arm64_hash}\";|" "$DEF"
+path, latest, l_x64, l_arm64, d_arm64, d_x64 = sys.argv[1:]
 
-# Verify by re-reading — the sed above is fragile with two hashes.
-# Use a more robust approach: replace by line matching the URL context.
-# Rewrite from scratch if sed left things inconsistent.
-x64_in_file=$(grep -A1 "linux-x64" "$DEF" | grep -oE 'sha256 = "[^"]+"' | sed 's/sha256 = "//; s/"$//')
-arm64_in_file=$(grep -A1 "linux-arm64" "$DEF" | grep -oE 'sha256 = "[^"]+"' | sed 's/sha256 = "//; s/"$//')
+with open(path) as f:
+    text = f.read()
 
-if [[ "$x64_in_file" != "$x64_hash" || "$arm64_in_file" != "$arm64_hash" ]]; then
-  echo "Sed replacement was inconsistent, doing targeted fix..." >&2
-  # Use perl for reliable multi-match replacement by occurrence.
-  perl -i -0pe "s{(linux-x64/proton-drive\";\n\s*sha256 = \")[^\"]+\"}{\\1${x64_hash}\"}" "$DEF"
-  perl -i -0pe "s{(linux-arm64/proton-drive\";\n\s*sha256 = \")[^\"]+\"}{\\1${arm64_hash}\"}" "$DEF"
-fi
+text = re.sub(r'version = "[^"]+";', f'version = "{latest}";', text, count=1)
 
-echo "Updated proton-drive-cli: ${latest} (x64: ${x64_hash}, arm64: ${arm64_hash})"
+for slug, sri in (
+    ("linux-x64", l_x64),
+    ("linux-arm64", l_arm64),
+    ("darwin-arm64", d_arm64),
+    ("darwin-x64", d_x64),
+):
+    text, count = re.subn(
+        rf'({slug}/proton-drive";\n\s*hash = ")[^"]+"',
+        lambda m: f'{m.group(1)}{sri}"',
+        text,
+    )
+    if count != 1:
+        sys.exit(f"proton-drive-cli: expected 1 hash for {slug}, matched {count}")
+
+directory = os.path.dirname(path) or "."
+mode = os.stat(path).st_mode
+with tempfile.NamedTemporaryFile("w", dir=directory, delete=False) as tmp:
+    tmp.write(text)
+    tmp_path = tmp.name
+os.chmod(tmp_path, mode)
+os.replace(tmp_path, path)
+PY
+
+# Guard against a rewrite that produced syntactically broken Nix.
+nix-instantiate --parse "$DEF" >/dev/null
+
+echo "Updated proton-drive-cli to ${latest} across all 4 platforms:"
+echo "  linux-x64:    ${l_x64_sri}"
+echo "  linux-arm64:  ${l_arm64_sri}"
+echo "  darwin-arm64: ${d_arm64_sri}"
+echo "  darwin-x64:   ${d_x64_sri}"
