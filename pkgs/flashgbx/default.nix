@@ -10,14 +10,14 @@
 }:
 python3Packages.buildPythonApplication {
   pname = "FlashGBX";
-  version = "4.6";
+  version = "5.0.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "lesserkuma";
     repo = "FlashGBX";
-    rev = "4.6";
-    hash = "sha256-t2Ssf+DBJL1ecGPNPl2Asm624D/TJ2hHHUAk61s0lzs=";
+    rev = "5.0.1";
+    hash = "sha256-7iDLOL0FavPd8aKQz2rwV7seuINbejssGeYm37BN9jM=";
   };
 
   nativeBuildInputs = [
