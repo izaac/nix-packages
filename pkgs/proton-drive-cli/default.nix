@@ -18,11 +18,11 @@
     };
     aarch64-darwin = fetchurl {
       url = "https://proton.me/download/drive/cli/${version}/darwin-arm64/proton-drive";
-      sha256 = "1hk67pa5r3zjvqbqqhvd08rbh39cngcllm665zlvz0dm7hlx6vjx";
+      sha256 = "0568knwsajbychcmiyv91m1h587zj3mnygs3l7fbhwpawgaxhcdr";
     };
     x86_64-darwin = fetchurl {
       url = "https://proton.me/download/drive/cli/${version}/darwin-x64/proton-drive";
-      sha256 = "1hk67pa5r3zjvqbqqhvd08rbh39cngcllm665zlvz0dm7hlx6vjx";
+      sha256 = "07sj3a7q96mnwi295zrhx1hp5q395w1j5all0179a4yi319k8nj3";
     };
   };
 
