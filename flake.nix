@@ -44,6 +44,7 @@
         brave-origin = pkgs.callPackage ./pkgs/brave-origin {};
         flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
         opengigabyte = pkgs.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
+        plex = pkgs.callPackage ./pkgs/plex {};
         sparrow = pkgs.callPackage ./pkgs/sparrow {};
       };
     in
@@ -71,6 +72,7 @@
           izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
           izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
           izaac-opengigabyte = final.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
+          izaac-plex = final.callPackage ./pkgs/plex {};
           izaac-sparrow = final.callPackage ./pkgs/sparrow {};
         };
       in

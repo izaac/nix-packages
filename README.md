@@ -8,6 +8,7 @@ Personal Nix package collection.
 |--------------------|-------------------------------|-------------|
 | `proton-drive-cli` | linux, darwin (x64 + arm64)   | `update.sh` |
 | `pd`               | linux, darwin                 | manual      |
+| `plex`             | linux (x64 + arm64)           | `update.sh` |
 | `sparrow`          | linux (x64 + arm64)           | planned     |
 | `antigravity-cli`  | linux, darwin                 | nix-update  |
 | `brave-origin`     | linux                         | nix-update  |
@@ -15,6 +16,12 @@ Personal Nix package collection.
 | `zelda-oot`        | linux                         | manual      |
 | `flashgbx`         | linux                         | manual      |
 | `opengigabyte`     | linux                         | manual      |
+
+`plex` tracks the newest Plex Media Server build on plex.tv, which nixpkgs
+often trails by weeks. It overrides the `version` and `src` of nixpkgs'
+`plexRaw` and reuses the stock FHS userenv, so `services.plex` works unchanged.
+It is deliberately absent from the Cachix build list: the binaries are unfree
+and redistributing them from a public cache is not ours to do.
 
 ## Usage
 
