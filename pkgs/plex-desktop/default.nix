@@ -26,6 +26,7 @@
   nss,
   squashfsTools,
   stdenv,
+  udev,
   writeShellScript,
   xkeyboard_config,
   libxcb-wm,
@@ -108,6 +109,7 @@
       xrandr
       pciutils
       libdeflate
+      udev
     ];
 
     strictDeps = true;
@@ -135,23 +137,22 @@
       rm -f $out/lib/libdrm.so*
       rm -f $out/lib/libdrm*
 
-      # Keep dependencies where the version from nixpkgs is higher.
+      # Keep dependencies where the version from nixpkgs is higher or bundled in snap.
       for lib in \
         libasound.so.2 \
+        libdeflate.so.0 \
         libjbig.so.0 \
         libjpeg.so.8 \
         liblcms2.so.2 \
-        libpci.so.3.6.4:libpci.so.3 \
-        libsnappy.so.1.1.8:libsnappy.so.1 \
+        libpci.so.3 \
+        libsnappy.so.1 \
         libtiff.so.5 \
         libwebp.so.6 \
-        libxkbfile.so.1.0.2:libxkbfile.so.1 \
-        libxslt.so.1.1.34:libxslt.so.1
+        libxkbfile.so.1 \
+        libxslt.so.1
       do
-        src_name="''${lib%%:*}"
-        dst_name="''${lib##*:}"
-        if [ -f "usr/lib/x86_64-linux-gnu/$src_name" ]; then
-          cp "usr/lib/x86_64-linux-gnu/$src_name" "$out/lib/$dst_name"
+        if [ -e "usr/lib/x86_64-linux-gnu/$lib" ]; then
+          cp -L "usr/lib/x86_64-linux-gnu/$lib" "$out/lib/$lib"
         fi
       done
 
@@ -164,6 +165,7 @@ in
     targetPkgs = _pkgs: [
       alsa-lib
       libdrm
+      udev
       xkeyboard_config
     ];
 
