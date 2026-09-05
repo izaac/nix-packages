@@ -9,6 +9,7 @@ Personal Nix package collection.
 | `proton-drive-cli` | linux, darwin (x64 + arm64)   | `update.sh` |
 | `pd`               | linux, darwin                 | manual      |
 | `plex`             | linux (x64 + arm64)           | `update.sh` |
+| `plex-desktop`     | linux (x64)                   | `update.sh` |
 | `sparrow`          | linux (x64 + arm64)           | planned     |
 | `antigravity-cli`  | linux, darwin                 | nix-update  |
 | `brave-origin`     | linux                         | nix-update  |
