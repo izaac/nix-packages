@@ -53,7 +53,7 @@ jobs:
             # Only packages with an upstream to track. vcrunch and zelda-oot
             # are local-only (src = ./. / writeShellScriptBin) — no version
             # concept beyond what Chief stamps manually.
-            for pkg in brave-origin antigravity-cli proton-drive-cli plex plex-desktop; do
+            for pkg in brave-origin antigravity-cli proton-drive-cli plex; do
               echo "::group::update $pkg"
               def="pkgs/$pkg/default.nix"
               before=$(grep -oE "version = \"[^\"]+\"" "$def" | head -n1 | sed "s/version = \"//; s/\"\$//")

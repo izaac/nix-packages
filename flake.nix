@@ -45,7 +45,6 @@
         flashgbx = pkgs.callPackage ./pkgs/flashgbx {};
         opengigabyte = pkgs.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
         plex = pkgs.callPackage ./pkgs/plex {};
-        plex-desktop = pkgs.callPackage ./pkgs/plex-desktop {};
         sparrow = pkgs.callPackage ./pkgs/sparrow {};
       };
     in
@@ -74,7 +73,6 @@
           izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
           izaac-opengigabyte = final.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
           izaac-plex = final.callPackage ./pkgs/plex {};
-          izaac-plex-desktop = final.callPackage ./pkgs/plex-desktop {};
           izaac-sparrow = final.callPackage ./pkgs/sparrow {};
         };
       in
