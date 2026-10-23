@@ -19,7 +19,7 @@ status="/tmp/nix-packages-update-status.md"
   echo "|---------|--------|-------|--------|---------------|"
 } > "$status"
 
-packages=(brave-origin antigravity-cli proton-drive-cli plex)
+packages=(brave-origin antigravity-cli opencode proton-drive-cli plex)
 failures=0
 
 for pkg in "${packages[@]}"; do

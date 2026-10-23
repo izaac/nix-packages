@@ -10,7 +10,8 @@ Personal Nix package collection.
 | `pd`               | linux, darwin                 | manual      |
 | `plex`             | linux (x64 + arm64)           | `update.sh` |
 | `sparrow`          | linux (x64 + arm64)           | planned     |
-| `antigravity-cli`  | linux, darwin                 | nix-update  |
+| `antigravity-cli`  | linux, darwin                 | `update.sh` |
+| `opencode`         | linux, darwin (x64 + arm64)   | `update.sh` |
 | `brave-origin`     | linux                         | nix-update  |
 | `vcrunch`          | linux                         | manual      |
 | `zelda-oot`        | linux                         | manual      |
