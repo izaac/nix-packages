@@ -15,17 +15,17 @@
   plex,
   plexRaw,
 }: let
-  version = "1.43.5.11029-6bf8af3f0";
+  version = "1.43.5.11079-b3b13e506";
 
   # Debian packages, matching the archives nixpkgs' plexRaw consumes.
   sources = {
     x86_64-linux = {
       url = "https://downloads.plex.tv/plex-media-server-new/${version}/debian/plexmediaserver_${version}_amd64.deb";
-      hash = "sha256-Vi7flFa+M4okGC+Df+XVMtfnW6ez1fa+olAwg+d2IuE=";
+      hash = "sha256-dOmnHJfgbW6SXMQ5gnkUH9g47p30RvkOdpYU+iyHogY=";
     };
     aarch64-linux = {
       url = "https://downloads.plex.tv/plex-media-server-new/${version}/debian/plexmediaserver_${version}_arm64.deb";
-      hash = "sha256-sonCGNucTvqB7/q477gsqaulV29Y6VrrfEhbB9tB7Bs=";
+      hash = "sha256-ivNrF/iG40QUCotH5OLvZT8xx4bS6qc4dEL1tgYgBxc=";
     };
   };
 
