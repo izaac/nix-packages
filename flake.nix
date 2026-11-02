@@ -30,7 +30,7 @@
       import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [(import ./overlays/dwarfs-skip-affinity-test.nix)];
+        overlays = [];
       };
     treefmtEval =
       forEachSystem (system:
@@ -64,25 +64,23 @@
       formatting = treefmtEval.${system}.config.build.check self;
     });
 
-    overlays.default = final: prev:
-      (import ./overlays/dwarfs-skip-affinity-test.nix final prev)
-      // (let
-        linuxOnly = lib.optionalAttrs final.stdenv.hostPlatform.isLinux {
-          izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
-          izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
-          izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
-          izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
-          izaac-opengigabyte = final.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
-          izaac-plex = final.callPackage ./pkgs/plex {};
-          izaac-sparrow = final.callPackage ./pkgs/sparrow {};
-        };
-      in
-        linuxOnly
-        // {
-          izaac-antigravity-cli = final.callPackage ./pkgs/antigravity-cli {};
-          izaac-proton-drive-cli = final.callPackage ./pkgs/proton-drive-cli {};
-          izaac-opencode = final.callPackage ./pkgs/opencode {};
-          izaac-pd = final.callPackage ./pkgs/pd {};
-        });
+    overlays.default = final: _prev: let
+      linuxOnly = lib.optionalAttrs final.stdenv.hostPlatform.isLinux {
+        izaac-vcrunch = final.callPackage ./pkgs/vcrunch {};
+        izaac-zelda-oot = final.callPackage ./pkgs/zelda-oot {};
+        izaac-brave-origin = final.callPackage ./pkgs/brave-origin {};
+        izaac-flashgbx = final.callPackage ./pkgs/flashgbx {};
+        izaac-opengigabyte = final.linuxPackages_latest.callPackage ./pkgs/opengigabyte {};
+        izaac-plex = final.callPackage ./pkgs/plex {};
+        izaac-sparrow = final.callPackage ./pkgs/sparrow {};
+      };
+    in
+      linuxOnly
+      // {
+        izaac-antigravity-cli = final.callPackage ./pkgs/antigravity-cli {};
+        izaac-proton-drive-cli = final.callPackage ./pkgs/proton-drive-cli {};
+        izaac-opencode = final.callPackage ./pkgs/opencode {};
+        izaac-pd = final.callPackage ./pkgs/pd {};
+      };
   };
 }
