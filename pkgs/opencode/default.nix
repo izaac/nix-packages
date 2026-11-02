@@ -9,26 +9,26 @@
   writableTmpDirAsHomeHook,
   darwin,
 }: let
-  version = "2.1.4";
+  version = "2.2.5";
 
   # update.sh rewrites these blocks in place; keep the url + hash shape it
   # greps for. Asset names come from OpenCode's update manifest.
   sources = {
     "x86_64-linux" = {
       url = "https://opencode.ai/files/bin/${version}/opencode-linux-x64.tar.gz";
-      hash = "sha256-Ltr4z5boHexe6ZajGWsDNFz1nloWc9g6RZm7SvxcX20=";
+      hash = "sha256-CfRDAsEP0DaRL1nIH9Gu9d9F3Qb2SRl/nfybvip5YU4=";
     };
     "aarch64-linux" = {
       url = "https://opencode.ai/files/bin/${version}/opencode-linux-arm64.tar.gz";
-      hash = "sha256-dZydbnska4G8yT38bMO7KjgofHW2IC4wXqystd2IIxU=";
+      hash = "sha256-WlKPQsr1dsbN7OahkesnPT21Tv+lUY4EAmhNj4AmrrY=";
     };
     "x86_64-darwin" = {
       url = "https://opencode.ai/files/bin/${version}/opencode-darwin-x64.zip";
-      hash = "sha256-fzUmW2kAznWwHgPKskl2IgJrQCwCHs9ubmh1WHQkWms=";
+      hash = "sha256-TUQZAi5v+9SK/JfFEBvfAB04sEmfUWFpuagKh6NA/VY=";
     };
     "aarch64-darwin" = {
       url = "https://opencode.ai/files/bin/${version}/opencode-darwin-arm64.zip";
-      hash = "sha256-+e3B3e0IDjmqYduUJwpRr2Z3KsVyvn1rFfpvhyUaPf8=";
+      hash = "sha256-JbqZCJefp9dkeSyCWJtLV2irFREVTgMX2YqnfSFs52c=";
     };
   };
 in
