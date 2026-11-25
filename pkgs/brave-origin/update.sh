@@ -18,9 +18,17 @@ current=$(grep -oE 'version = "[^"]+"' "$DEF" | head -n1 | sed 's/version = "//;
 
 # Collect every release carrying the linux nightly zip, regardless of the
 # prerelease flag. jq emits one "<version>\t<asset_url>" line per candidate.
+# Send GH_TOKEN when it exists: unauthenticated api.github.com allows only 60
+# requests per hour per IP, and GitHub Actions runners share exhausted IPs,
+# which surfaced as an opaque curl 403 and silently skipped the bump.
+api_header=(-H "Accept: application/vnd.github+json")
+if [[ -n "${GH_TOKEN:-}" ]]; then
+  api_header+=(-H "Authorization: Bearer $GH_TOKEN")
+fi
+
 candidates=$(
-  curl -fsSL \
-       -H "Accept: application/vnd.github+json" \
+  curl -fsSL --retry 3 --retry-delay 5 \
+       "${api_header[@]}" \
        "https://api.github.com/repos/brave/brave-browser/releases?per_page=100" \
     | nix shell nixpkgs#jq --command jq -r '
         .[]
